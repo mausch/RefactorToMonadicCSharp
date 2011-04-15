@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Linq;
 using Xunit;
-using Microsoft.FSharp.Core;
 
 namespace RefactorToMonadicCSharp
 {
     public abstract class BaseTests
     {
-        protected abstract FSharpOption<IVersionSpec> ParseVersionSpec(string v);
+        protected abstract Option<IVersionSpec> ParseVersionSpec(string v);
 
         [Fact]
         public void ParseVersionSpecSimpleVersionNoBrackets()
         {
             var v = ParseVersionSpec("2.1");
-            Assert.True(v.HasValue());
+            Assert.True(v.HasValue);
             Assert.Equal("2.1", v.Value.MinVersion.ToString());
             Assert.Null(v.Value.MaxVersion);
             Assert.False(v.Value.IsMaxInclusive);
@@ -23,7 +22,7 @@ namespace RefactorToMonadicCSharp
         public void ParseVersionSpecSimpleVersionNoBracketsExtraSpaces()
         {
             var v = ParseVersionSpec("  1  .  2  ");
-            Assert.True(v.HasValue());
+            Assert.True(v.HasValue);
             Assert.Equal("1.2", v.Value.MinVersion.ToString());
             Assert.Null(v.Value.MaxVersion);
             Assert.False(v.Value.IsMaxInclusive);
@@ -33,7 +32,7 @@ namespace RefactorToMonadicCSharp
         public void ParseVersionSpecMaxOnlyInclusive()
         {
             var v = ParseVersionSpec("(,1.2]");
-            Assert.True(v.HasValue());
+            Assert.True(v.HasValue);
             Assert.Null(v.Value.MinVersion);
             Assert.False(v.Value.IsMinInclusive);
             Assert.Equal("1.2", v.Value.MaxVersion.ToString());
@@ -44,7 +43,7 @@ namespace RefactorToMonadicCSharp
         public void ParseVersionSpecMaxOnlyExclusive()
         {
             var v = ParseVersionSpec("(,1.2)");
-            Assert.True(v.HasValue());
+            Assert.True(v.HasValue);
             Assert.Null(v.Value.MinVersion);
             Assert.False(v.Value.IsMinInclusive);
             Assert.Equal("1.2", v.Value.MaxVersion.ToString());
@@ -134,7 +133,7 @@ namespace RefactorToMonadicCSharp
             // Act
             var versionInfo = ParseVersionSpec("   [  1 .2   , 2  .3   ]  ");
 
-            Assert.True(versionInfo.HasValue());
+            Assert.True(versionInfo.HasValue);
 
             // Assert
             Assert.Equal("1.2", versionInfo.Value.MinVersion.ToString());
@@ -147,7 +146,7 @@ namespace RefactorToMonadicCSharp
         public void ParseVersionSpecShort()
         {
             var v = ParseVersionSpec("2");
-            Assert.False(v.HasValue());
+            Assert.False(v.HasValue);
         }
 
     }

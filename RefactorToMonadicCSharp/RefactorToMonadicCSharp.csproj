@@ -31,7 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="xunit">
@@ -45,9 +44,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Option.cs" />
+    <Compile Include="Helpers\Unit.cs" />
     <Compile Include="Tests\BaseTests.cs" />
     <Compile Include="Tests\FunctionalTests.cs" />
-    <Compile Include="Helpers\FSharpOption.cs" />
     <Compile Include="Helpers\FuncInference.cs" />
     <Compile Include="Functional.cs" />
     <Compile Include="Imperative.cs" />

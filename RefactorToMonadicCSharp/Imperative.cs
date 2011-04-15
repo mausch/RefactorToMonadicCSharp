@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.FSharp.Core;
 
 namespace RefactorToMonadicCSharp
 {
@@ -121,13 +120,13 @@ namespace RefactorToMonadicCSharp
             return true;
         }
 
-        public static FSharpOption<IVersionSpec> ParseVersionSpec(string value)
+        public static Option<IVersionSpec> ParseVersionSpec(string value)
         {
             IVersionSpec result;
             var ok = TryParseVersionSpec(value, out result);
             if (ok)
                 return result.ToOption();
-            return FSharpOption<IVersionSpec>.None;
+            return Option<IVersionSpec>.None;
         }
 
     }
