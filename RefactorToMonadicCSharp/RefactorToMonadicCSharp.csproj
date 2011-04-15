@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Tests\BaseTests.cs" />
     <Compile Include="Tests\FunctionalTests.cs" />
-    <Compile Include="Helpers\FFunc.cs" />
     <Compile Include="Helpers\FSharpOption.cs" />
     <Compile Include="Helpers\FuncInference.cs" />
     <Compile Include="Functional.cs" />

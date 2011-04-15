@@ -56,7 +56,9 @@ namespace RefactorToMonadicCSharp
         }
 
         public static FSharpOption<R> SelectMany<T, R>(this FSharpOption<T> option, Func<T, FSharpOption<R>> selector) {
-            return OptionModule.Bind(FFunc.FromFunc(selector), option);
+            if (!option.HasValue())
+                return FSharpOption<R>.None;
+            return selector(option.Value);
         }
 
         public static Func<FSharpOption<A>, FSharpOption<B>, FSharpOption<C>> Lift<A, B, C>(Func<A, B, C> f) {
@@ -70,11 +72,13 @@ namespace RefactorToMonadicCSharp
         }
 
         public static FSharpOption<R> Select<T, R>(this FSharpOption<T> option, Func<T,R> selector) {
-            return OptionModule.Map(FFunc.FromFunc(selector), option);
+            if (!option.HasValue())
+                return FSharpOption<R>.None;
+            return selector(option.Value).ToOption();
         }
 
         public static FSharpOption<T> Where<T>(this FSharpOption<T> option, Func<T, bool> predicate) {
-            if (OptionModule.Exists(FFunc.FromFunc(predicate), option))
+            if (option.HasValue() && predicate(option.Value))
                 return option;
             return FSharpOption<T>.None;
         }
