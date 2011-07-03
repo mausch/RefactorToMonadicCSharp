@@ -25,7 +25,7 @@ namespace RefactorToMonadicCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static FSharpOption<T> ToOption<T>(this Nullable<T> value) where T: struct {
+        public static FSharpOption<T> ToOption<T>(this T? value) where T: struct {
             if (!value.HasValue)
                 return FSharpOption<T>.None;
             return value.Value.ToOption();
@@ -49,10 +49,10 @@ namespace RefactorToMonadicCSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Nullable<T> ToNullable<T>(this FSharpOption<T> value) where T : struct {
+        public static T? ToNullable<T>(this FSharpOption<T> value) where T : struct {
             if (!value.HasValue())
                 return null;
-            return new Nullable<T>(value.Value);
+            return value.Value;
         }
 
         public static FSharpOption<R> SelectMany<T, R>(this FSharpOption<T> option, Func<T, FSharpOption<R>> selector) {
