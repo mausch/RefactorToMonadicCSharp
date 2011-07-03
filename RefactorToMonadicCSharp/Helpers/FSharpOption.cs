@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.FSharp.Core;
-using System.Collections.Generic;
 
 namespace RefactorToMonadicCSharp
 {
