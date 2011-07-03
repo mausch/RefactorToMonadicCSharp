@@ -40,14 +40,14 @@ namespace RefactorToMonadicCSharp
             var checkParts = L.F((string[] parts) => parts.Length > 2 ? FSharpOption<Unit>.None : FSharpOption.SomeUnit);
             var minVersion = L.F((string[] parts) => {
                 if (string.IsNullOrWhiteSpace(parts[0]))
-                    return FSharpOption<Version>.Some(null);
-                return ParseVersion(parts[0]);
+                    return FSharpOption<FSharpOption<Version>>.Some(FSharpOption<Version>.None);
+                return ParseVersion(parts[0]).Select(v => v.ToOption());
             });
             var maxVersion = L.F((string[] parts) =>  {
                 var p = parts.Length == 2 ? parts[1] : parts[0];
                 if (string.IsNullOrWhiteSpace(p))
-                    return FSharpOption<Version>.Some(null);
-                return ParseVersion(p);
+                    return FSharpOption<FSharpOption<Version>>.Some(FSharpOption<Version>.None);
+                return ParseVersion(p).Select(v => v.ToOption());
             });
             /*
             var singleVersion = ParseVersion(value);
@@ -86,7 +86,12 @@ namespace RefactorToMonadicCSharp
                                          from y in checkParts(parts)
                                          from min in minVersion(parts)
                                          from max in maxVersion(parts)
-                                         select (IVersionSpec)new VersionSpec { IsMinInclusive = isMin, MinVersion = min, IsMaxInclusive = isMax, MaxVersion = max });
+                                         select (IVersionSpec)new VersionSpec {
+                                             IsMinInclusive = isMin, 
+                                             MinVersion = min.HasValue() ? min.Value : null, 
+                                             IsMaxInclusive = isMax, 
+                                             MaxVersion = max.HasValue() ? max.Value : null,
+                                         });
 
             return singleVersion.OrElse(versionRange)();
 
