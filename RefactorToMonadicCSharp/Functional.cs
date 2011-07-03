@@ -79,17 +79,15 @@ namespace RefactorToMonadicCSharp
                 from v in ParseVersion(value)
                 select (IVersionSpec)new VersionSpec { IsMinInclusive = true, MinVersion = v };
 
-            var versionRange = L.F(() => {
-                return from x in checkLength(value)
-                       from isMin in minInclusive(value)
-                       from isMax in maxInclusive(value)
-                       let val = value.Substring(1, value.Length - 2)
-                       let parts = val.Split(',')
-                       from y in checkParts(parts)
-                       from min in minVersion(parts)
-                       from max in maxVersion(parts)
-                       select (IVersionSpec)new VersionSpec { IsMinInclusive = isMin, MinVersion = min, IsMaxInclusive = isMax, MaxVersion = max };
-            });
+            var versionRange = L.F(() => from x in checkLength(value)
+                                         from isMin in minInclusive(value)
+                                         from isMax in maxInclusive(value)
+                                         let val = value.Substring(1, value.Length - 2)
+                                         let parts = val.Split(',')
+                                         from y in checkParts(parts)
+                                         from min in minVersion(parts)
+                                         from max in maxVersion(parts)
+                                         select (IVersionSpec)new VersionSpec { IsMinInclusive = isMin, MinVersion = min, IsMaxInclusive = isMax, MaxVersion = max });
 
             return singleVersion.OrElse(versionRange)();
 
