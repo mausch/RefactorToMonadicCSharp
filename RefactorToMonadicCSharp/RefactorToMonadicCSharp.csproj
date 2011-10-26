@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functional2.cs" />
     <Compile Include="Tests\BaseTests.cs" />
     <Compile Include="Tests\FunctionalTests.cs" />
     <Compile Include="Helpers\FSharpOption.cs" />

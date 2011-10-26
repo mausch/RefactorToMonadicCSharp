@@ -1,51 +1,50 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.FSharp.Core;
 
 namespace RefactorToMonadicCSharp {
-    public static class Functional {
-        public static FSharpOption<Version> ParseVersion(string value) {
+    public static class Functional2 {
+        public static IEnumerable<Version> ParseVersion(string value) {
             Version v;
             var ok = Version.TryParse(value, out v);
             if (ok)
-                return v.ToOption();
-            return FSharpOption<Version>.None;
+                return new[] {v};
+            return new Version[0];
         }
 
-        public static FSharpOption<IVersionSpec> ParseVersionSpec(string value) {
+        public static IEnumerable<IVersionSpec> ParseVersionSpec(string value) {
             if (value == null)
                 throw new ArgumentNullException("value");
             value = value.Trim();
-            var checkLength =
-                L.F((string val) => val.Length < 3 ? FSharpOption<Unit>.None : FSharpOption.SomeUnit);
+            var checkLength = L.F((string val) => val.Length < 3 ? new int[0] : new[] {0});
             var minInclusive = L.F((string val) => {
                 var c = val.First();
                 if (c == '[')
-                    return true.ToOption();
+                    return new[] {true};
                 if (c == '(')
-                    return false.ToOption();
-                return FSharpOption<bool>.None;
+                    return new[] {false};
+                return new bool[0];
             });
             var maxInclusive = L.F((string val) => {
                 var c = val.Last();
                 if (c == ']')
-                    return true.ToOption();
+                    return new[] {true};
                 if (c == ')')
-                    return false.ToOption();
-                return FSharpOption<bool>.None;
+                    return new[] {false};
+                return new bool[0];
             });
             var checkParts =
-                L.F((string[] parts) => parts.Length > 2 ? FSharpOption<Unit>.None : FSharpOption.SomeUnit);
+                L.F((string[] parts) => parts.Length > 2 ? new int[0] : new [] {0});
             var minVersion = L.F((string[] parts) => {
                 if (string.IsNullOrWhiteSpace(parts[0]))
-                    return FSharpOption<FSharpOption<Version>>.Some(FSharpOption<Version>.None);
-                return ParseVersion(parts[0]).Select(v => v.ToOption());
+                    return new[] {new Version[0]};
+                return ParseVersion(parts[0]).Select(v => new[] {v});
             });
             var maxVersion = L.F((string[] parts) => {
                 var p = parts.Length == 2 ? parts[1] : parts[0];
                 if (string.IsNullOrWhiteSpace(p))
-                    return FSharpOption<FSharpOption<Version>>.Some(FSharpOption<Version>.None);
-                return ParseVersion(p).Select(v => v.ToOption());
+                    return new[] {new Version[0]};
+                return ParseVersion(p).Select(v => new[] {v});
             });
 
             var singleVersion =
@@ -62,12 +61,12 @@ namespace RefactorToMonadicCSharp {
                                          from max in maxVersion(parts)
                                          select (IVersionSpec) new VersionSpec {
                                              IsMinInclusive = isMin,
-                                             MinVersion = min.HasValue() ? min.Value : null,
+                                             MinVersion = min.Any() ? min.First() : null,
                                              IsMaxInclusive = isMax,
-                                             MaxVersion = max.HasValue() ? max.Value : null,
+                                             MaxVersion = max.Any() ? max.First() : null,
                                          });
 
-            return singleVersion.OrElse(versionRange)();
+            return singleVersion.Any() ? singleVersion : versionRange();
         }
     }
 }
